@@ -23,13 +23,21 @@ JNIEXPORT void JNICALL Java_com_diffbot_fasttext_FastTextModel_load
 JNIEXPORT jobject JNICALL Java_com_diffbot_fasttext_FastTextModel_predictProba
   (JNIEnv *, jobject, jstring);
 
-  /*
-   * Class:     com_diffbot_fasttext_FastTextModel
-   * Method:    predictProbaTopK
-   * Signature: (Ljava/lang/String;I)[Lcom/diffbot/fasttext/Prediction;
-   */
-  JNIEXPORT jobjectArray JNICALL Java_com_diffbot_fasttext_FastTextModel_predictProbaTopK
-    (JNIEnv *, jobject, jstring, jint);
+/*
+ * Class:     com_diffbot_fasttext_FastTextModel
+ * Method:    predictProbaTopK
+ * Signature: (Ljava/lang/String;I)[Lcom/diffbot/fasttext/Prediction;
+ */
+JNIEXPORT jobjectArray JNICALL Java_com_diffbot_fasttext_FastTextModel_predictProbaTopK
+  (JNIEnv *, jobject, jstring, jint);
+
+/*
+ * Class:     com_diffbot_fasttext_FastTextModel
+ * Method:    predictProbaWithThreshold
+ * Signature: (Ljava/lang/String;F)[Lcom/diffbot/fasttext/Prediction;
+ */
+JNIEXPORT jobjectArray JNICALL Java_com_diffbot_fasttext_FastTextModel_predictProbaWithThreshold
+  (JNIEnv *, jobject, jstring, jfloat);
 
 /*
  * Class:     com_diffbot_fasttext_FastTextModel

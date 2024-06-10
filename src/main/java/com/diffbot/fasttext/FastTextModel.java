@@ -27,6 +27,7 @@ public class FastTextModel implements AutoCloseable {
     private native void load(ByteBuffer byteBuffer);
     public native Prediction predictProba(String s);
     public native Prediction[] predictProbaTopK(String s, int k);
+    public native Prediction[] predictProbaWithThreshold(String s, float threshold);
 
     @Override
     public native void close();
