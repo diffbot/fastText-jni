@@ -11,7 +11,6 @@ public class FastTextTest {
 
     @Test
     public void modelTest() throws IOException {
-        Prediction prediction;
         FastTextModel model;
         /*
          * language identification
@@ -21,16 +20,34 @@ public class FastTextTest {
             model = new FastTextModel(inputStream);
         }
 
-        prediction = model.predictProba("Web Data for your AI Imagine if your app could access the web like a structured database .");
-        System.out.println(prediction.label + " : " + prediction.probability);
-        Assertions.assertEquals("__label__en", prediction.label);
+        {
+            Prediction prediction = model.predictProba("Web Data for your AI Imagine if your app could access the web like a structured database .");
+            System.out.println(prediction.label + " : " + prediction.probability);
+            Assertions.assertEquals("__label__en", prediction.label);
+        }
 
-        prediction = model.predictProba("AI のための Web データ アプリが構造化データベースのように Web にアクセスできるかどうかを想像してください。");
-        System.out.println(prediction.label + " : " + prediction.probability);
-        Assertions.assertEquals("__label__ja", prediction.label);
+        {
+            Prediction prediction = model.predictProba("AI のための Web データ アプリが構造化データベースのように Web にアクセスできるかどうかを想像してください。");
+            System.out.println(prediction.label + " : " + prediction.probability);
+            Assertions.assertEquals("__label__ja", prediction.label);
+        }
 
-        Prediction[] predictions = model.predictProbaTopK(" ", -1);
-        Assertions.assertEquals(predictions.length, 176);
+        {
+            Prediction[] predictions = model.predictProbaTopK(" ", -1);
+            Assertions.assertEquals(176, predictions.length);
+        }
+
+        {
+            float threshold = 0.01f;
+            Prediction[] predictions = model.predictProbaWithThreshold(" ", threshold);
+            Assertions.assertEquals(24, predictions.length);
+            double prev = Float.MAX_VALUE;
+            for (Prediction prediction : predictions) {
+                Assertions.assertTrue(prediction.probability >= threshold);
+                Assertions.assertTrue(prediction.probability <= prev);
+                prev = prediction.probability;
+            }
+        }
 
         model.close();
 
@@ -42,7 +59,7 @@ public class FastTextTest {
             model = new FastTextModel(inputStream);
         }
 
-        prediction = model.predictProba("web data for your ai imagine if your app could access the web like a structured database .");
+        Prediction prediction = model.predictProba("web data for your ai imagine if your app could access the web like a structured database .");
         System.out.println(prediction.label + " : " + prediction.probability);
         Assertions.assertEquals("__label__4", prediction.label);
 
@@ -54,7 +71,7 @@ public class FastTextTest {
             System.out.println(p.label + " : " + p.probability);
         }
 
-        Assertions.assertEquals(array.length, 4);
+        Assertions.assertEquals(4, array.length);
 
         model.close();
     }

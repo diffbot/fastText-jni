@@ -102,9 +102,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_diffbot_fasttext_FastTextModel_predictPr
         return NULL;
     }
 
-    if (predictions.size() < k) {
-        k = predictions.size();
-    }
+    k = predictions.size();
     jobjectArray top_k_predictions = env->NewObjectArray(k, predictionClass, nullptr);
 
     for (int i = 0; i < k; i++) {
@@ -116,6 +114,36 @@ JNIEXPORT jobjectArray JNICALL Java_com_diffbot_fasttext_FastTextModel_predictPr
     }
 
     return top_k_predictions;
+}
+
+JNIEXPORT jobjectArray JNICALL Java_com_diffbot_fasttext_FastTextModel_predictProbaWithThreshold
+(JNIEnv *env, jobject obj, jstring s, jfloat threshold) {
+
+    jboolean isCopy;
+    const char* utf_string = env->GetStringUTFChars(s, &isCopy);
+    FastTextWrapper *ft = (FastTextWrapper *) env->GetLongField(obj, handleFieldID);
+    std::vector<std::pair<fasttext::real,std::string>> predictions;
+    std::string text = utf_string;
+    std::stringstream stream;
+    stream << text << '\n';
+    bool result = ft->predictLine(stream, predictions, -1, threshold);
+    env->ReleaseStringUTFChars(s, utf_string);
+    if (!result || predictions.size() == 0) {
+        return NULL;
+    }
+
+    jsize k = predictions.size();
+    jobjectArray ret = env->NewObjectArray(k, predictionClass, nullptr);
+
+    for (int i = 0; i < k; i++) {
+        std::pair<fasttext::real, std::string> prediction = predictions[i];
+
+        jstring label = env->NewStringUTF(prediction.second.c_str());
+        jobject pred = env->NewObject(predictionClass, predictionConstructor, prediction.first, label);
+        env->SetObjectArrayElement(ret, i, pred);
+    }
+
+    return ret;
 }
 
 JNIEXPORT void JNICALL Java_com_diffbot_fasttext_FastTextModel_close

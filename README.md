@@ -4,7 +4,7 @@ fastText-jni is a Java wrapper for [fastText](https://github.com/facebookresearc
 
 ## Usage
 
-`implementation group: 'com.diffbot', name: 'fasttext-jni', version: '0.9.2.7'`
+`implementation group: 'com.diffbot', name: 'fasttext-jni', version: '0.9.2.8'`
 
 ```java
 FastTextModel model;
